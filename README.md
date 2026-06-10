@@ -1,15 +1,15 @@
-# Contribution [#]: [Issue Title]
+# Contribution [#]: [Improvement] Catch-path request dereference can mask original exceptions in REST handlers
 
-**Contribution Number:** [1 / 2 / 3]  
-**Student:** [Your Name]  
-**Issue:** [GitHub issue link]  
-**Status:** [Phase I / Phase II / Phase III / Phase IV] [In Progress / Complete]
+**Contribution Number:** 1 
+**Student:** Ethan Nguyen 
+**Issue:** (https://github.com/apache/gravitino/issues/10172) 
+**Status:** Phase 1 Complete
 
 ---
 
 ## Why I Chose This Issue
 
-[1-2 paragraphs explaining why this issue interests you, how it matches your skills/learning goals, what you hope to learn]
+It matches the languages I am comfortable with and hope to work with more in the future.
 
 ---
 
