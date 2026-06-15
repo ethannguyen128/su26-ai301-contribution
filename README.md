@@ -60,30 +60,32 @@ Cloned the fork of apache/gravitino locally using VS Code. No build was required
 
 ### Analysis
 
-[Your analysis of the root cause - what's causing the issue?]
+The root cause is that catch blocks in 16 REST handler files call request.get*() methods (e.g. request.getName(), request.getRoleNames()) without first checking if request is null. Since request can be null when a REST call fails early, the catch block throws a secondary NullPointerException that replaces the original exception in the error context, making the real failure invisible.
 
 ### Proposed Solution
 
-[High-level description of your fix approach]
+Extract the needed value from request into a local variable before the try block, with a null-safe fallback. The catch block then uses the precomputed variable instead of touching request directly.
 
 ### Implementation Plan
 
 Using UMPIRE framework (adapted):
 
-**Understand:** [Restate the problem]
+**Understand:** Multiple REST handler catch blocks dereference request without null checks. When request is null, a secondary NullPointerException masks the real failure.
 
-**Match:** [What similar patterns/solutions exist in the codebase?]
+**Match:** The fix follows a pattern already used in the codebase, extracting identifiers before the try block so catch blocks never need to access the request object.
 
-**Plan:** [Step-by-step implementation plan]
-1. [Modify file X to do Y]
-2. [Add function Z]
-3. [Update tests]
+**Plan:** 
+1. For each of the 16 affected files, find the catch block that calls request.get*()
+2. Extract the value into a local variable before the try block:
+String name = request != null ? request.getName() : "unknown";
+3. Replace request.getName() in the catch block with the precomputed name variable
+4. Add/adjust unit tests to verify the catch path is stable when request is null
 
-**Implement:** [Link to your branch/commits as you work]
+**Implement:** [[Link to your branch/commits as you work]](https://github.com/ethannguyen128/gravitino/tree/fix-issue-10172)
 
-**Review:** [Self-review checklist - does it follow the project's contribution guidelines?]
+**Review:** Verify changes follow CONTRIBUTING.md conventions, no endpoint APIs changed, no ExceptionHandlers behavior altered, and commit message follows project format.
 
-**Evaluate:** [How will you verify it works?]
+**Evaluate:** I will run .\gradlew test -PskipITs and confirm all tests pass. Add a unit test per affected file that sends a null request body and asserts the response is INTERNAL_SERVER_ERROR with an error type that is not NullPointerException.
 
 ---
 
