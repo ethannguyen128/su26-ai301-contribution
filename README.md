@@ -17,19 +17,20 @@ It matches the languages I am comfortable with and hope to work with more in the
 
 ### Problem Description
 
-[In your own words, what's broken or missing?]
+Multiple REST handler catch block reference request (e.g. request.getName()) without checking if it is null. When it is null, a primary exception occurs and the catch throws a secondary NullPointerException that hides what the original error was.
 
 ### Expected Behavior
 
-[What should happen?]
+The original exception should be preserved and returned through the ExceptionHandlers. There should not be any request.get*() calls in the catch blocks.
 
 ### Current Behavior
 
-[What actually happens?]
+The actual error is masked by the secondary NullPointerException which makes it difficult to know what the root cause of the error was.
 
 ### Affected Components
 
-[Which parts of the codebase are involved?]
+16 REST handler files under server/src/main/java/org/apache/gravitino/server/web/rest/:
+TableOperations.java, FilesetOperations.java, FunctionOperations.java, ModelOperations.java, SchemaOperations.java, MetalakeOperations.java, CatalogOperations.java, UserOperations.java, GroupOperations.java, RoleOperations.java, PolicyOperations.java, TagOperations.java, TopicOperations.java, PermissionOperations.java, StatisticOperations.java, JobOperations.java
 
 ---
 
