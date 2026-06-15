@@ -1,4 +1,4 @@
-# Contribution [#]: [Improvement] Catch-path request dereference can mask original exceptions in REST handlers
+# Contribution [1]: [Improvement] Catch-path request dereference can mask original exceptions in REST handlers
 
 **Contribution Number:** 1 
 **Student:** Ethan Nguyen 
@@ -50,7 +50,7 @@ Cloned the fork of apache/gravitino locally using VS Code. No build was required
 
 ### Reproduction Evidence
 
-- **Commit showing reproduction:**[ [Link to commit in your fork]](https://github.com/ethannguyen128/gravitino/tree/fix-issue-10172)
+- **Commit showing reproduction:(https://github.com/ethannguyen128/gravitino/tree/fix-issue-10172)
 - **Screenshots/logs:**  bug is visible directly in source code
 - **My findings:** The catch blocks in 16 REST handler files dereference request.get*() without null checks. When request is null, a secondary NullPointerException is thrown inside the catch block, masking the original exception and making debugging very difficult.
 
@@ -81,7 +81,7 @@ String name = request != null ? request.getName() : "unknown";
 3. Replace request.getName() in the catch block with the precomputed name variable
 4. Add/adjust unit tests to verify the catch path is stable when request is null
 
-**Implement:** [[Link to your branch/commits as you work]](https://github.com/ethannguyen128/gravitino/tree/fix-issue-10172)
+**Implement:** (https://github.com/ethannguyen128/gravitino/tree/fix-issue-10172)
 
 **Review:** Verify changes follow CONTRIBUTING.md conventions, no endpoint APIs changed, no ExceptionHandlers behavior altered, and commit message follows project format.
 
