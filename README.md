@@ -38,19 +38,21 @@ TableOperations.java, FilesetOperations.java, FunctionOperations.java, ModelOper
 
 ### Environment Setup
 
-[Notes on setting up your local development environment - challenges you faced, how you solved them]
+Cloned the fork of apache/gravitino locally using VS Code. No build was required to reproduce this issue as the bug is directly visible in the source code. Attempted to run .\gradlew build -x test but encountered PowerShell execution policy restrictions on Windows
 
 ### Steps to Reproduce
 
-1. [Step 1]
-2. [Step 2]
-3. [Observed result]
+1. Open server/src/main/java/org/apache/gravitino/server/web/rest/TableOperations.java
+2. Navigate to the createTable method and find the catch (Exception e) block (line 157)
+3. Observe that request.getName() is called inside the catch block with no null check on request
+4. If request is null when the primary exception occurs, this line throws a secondary NullPointerException that hides the original error
+5. The same pattern is repeated in 15 other files listed in the issue scope
 
 ### Reproduction Evidence
 
-- **Commit showing reproduction:** [Link to commit in your fork]
-- **Screenshots/logs:** [If applicable]
-- **My findings:** [What you discovered during reproduction]
+- **Commit showing reproduction:**[ [Link to commit in your fork]](https://github.com/ethannguyen128/gravitino/tree/fix-issue-10172)
+- **Screenshots/logs:**  bug is visible directly in source code
+- **My findings:** The catch blocks in 16 REST handler files dereference request.get*() without null checks. When request is null, a secondary NullPointerException is thrown inside the catch block, masking the original exception and making debugging very difficult.
 
 ---
 
