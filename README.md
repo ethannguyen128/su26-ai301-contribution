@@ -3,7 +3,7 @@
 **Contribution Number:** 1 
 **Student:** Ethan Nguyen 
 **Issue:** (https://github.com/apache/gravitino/issues/10172) 
-**Status:** Phase 1 Complete
+**Status:** Phase 3 Complete
 
 ---
 
