@@ -93,26 +93,28 @@ String name = request != null ? request.getName() : "unknown";
 
 ### Unit Tests
 
-- [ ] Test case 1: [Description]
-- [ ] Test case 2: [Description]
-- [ ] Test case 3: [Description]
+- [ ] Test case 1: **14 create/add/register handlers** (Table, Fileset, Function, Model, Schema, Catalog `create` + `testConnection`, User, Group, Role, Policy, Tag, Topic, Job): assert HTTP 500 (INTERNAL_SERVER_ERROR) with type `RuntimeException` — the primary exception is now marshaled cleanly instead of being masked by an NPE.
+- [ ] Test case 2: **PermissionOperations** grant path (PUT): same assertion.
+- [ ] Test case 3: **StatisticOperations** `dropStatistics`: same assertion.
+- [ ] Test case 4: **MetalakeOperations** `create`: asserts HTTP 400 (BAD_REQUEST) / `IllegalArgumentException`. This handler already guards against a null body explicitly, so it returns a clean 400; the test documents that it never exposes an NPE.
 
 ### Integration Tests
 
-- [ ] Integration scenario 1
-- [ ] Integration scenario 2
+N/A — the change is exercised through JUnit/Jersey resource tests (`Test*Operations`); no integration test is required.
 
 ### Manual Testing
 
-[What you tested manually and results]
+- `./gradlew :server:spotlessApply` — formatting clean.
+- `./gradlew :server:test -PskipITs --tests "org.apache.gravitino.server.web.rest.Test*Operations"` — **172 tests, all passing.**
+- The first run surfaced one failure: my MetalakeOperations test incorrectly expected a 500. Investigating showed `createMetalake` already has an explicit null-body guard returning 400; I corrected the test assertion and reverted my unnecessary edit to that handler.
+
 
 ---
 
 ## Implementation Notes
 
 ### Week [X] Progress
-
-[What you built this week, challenges faced, decisions made]
+Implemented the fix across all in-scope handlers using the planned pattern, extracted a null-safe identifier into a local variable before the `try`, and used it in the catch path instead of dereferencing `request`:
 
 ### Week [Y] Progress
 
