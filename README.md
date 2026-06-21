@@ -105,7 +105,7 @@ N/A — the change is exercised through JUnit/Jersey resource tests (`Test*Opera
 ### Manual Testing
 
 - `./gradlew :server:spotlessApply` — formatting clean.
-- `./gradlew :server:test -PskipITs --tests "org.apache.gravitino.server.web.rest.Test*Operations"` — **172 tests, all passing.**
+- `./gradlew :server:test -PskipITs --tests "org.apache.gravitino.server.web.rest.Test*Operations"`: **172 tests, all passing.**
 - The first run surfaced one failure: my MetalakeOperations test incorrectly expected a 500. Investigating showed `createMetalake` already has an explicit null-body guard returning 400; I corrected the test assertion and reverted my unnecessary edit to that handler.
 
 
@@ -113,7 +113,7 @@ N/A — the change is exercised through JUnit/Jersey resource tests (`Test*Opera
 
 ## Implementation Notes
 
-### Week [X] Progress
+### Week [3] Progress
 Implemented the fix across all in-scope handlers using the planned pattern, extracted a null-safe identifier into a local variable before the `try`, and used it in the catch path instead of dereferencing `request`:
 
 ### Week [Y] Progress
@@ -122,9 +122,11 @@ Implemented the fix across all in-scope handlers using the planned pattern, extr
 
 ### Code Changes
 
-- **Files modified:** [List]
-- **Key commits:** [Links to important commits]
-- **Approach decisions:** [Why you chose certain approaches]
+- **Files modified:** - **Source files modified (15):** TableOperations, FilesetOperations, FunctionOperations, ModelOperations, SchemaOperations, CatalogOperations, UserOperations, GroupOperations, RoleOperations, PolicyOperations, TagOperations, TopicOperations, PermissionOperations, StatisticOperations, JobOperations. MetalakeOperations was in scope but already guarded against null — no source change. In StatisticOperations only `dropStatistics` needed the fix; the update / partition-update / partition-drop paths already route through null-safe helpers. Test files modified (16): the matching `Test*Operations` classes.
+
+- **Key commits:** (https://github.com/ethannguyen128/gravitino/commit/d85947d36957d6f61083e93af6dd90d405b528ac)
+- **Approach decisions:** I chose to do a single atomic commit containing the fix and its tests, since the project squash-merges PRs and a reviewer expects the fix and its coverage together.
+
 
 ---
 
