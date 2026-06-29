@@ -3,7 +3,7 @@
 **Contribution Number:** 1 
 **Student:** Ethan Nguyen 
 **Issue:** (https://github.com/apache/gravitino/issues/10172) 
-**Status:** Phase 3 Complete
+**Status:** Phase 4 Complete
 
 ---
 
@@ -116,9 +116,9 @@ N/A — the change is exercised through JUnit/Jersey resource tests (`Test*Opera
 ### Week [3] Progress
 Implemented the fix across all in-scope handlers using the planned pattern, extracted a null-safe identifier into a local variable before the `try`, and used it in the catch path instead of dereferencing `request`:
 
-### Week [Y] Progress
+### Week [4] Progress
 
-[Continue documenting as you work]
+Submitted my first PR for the first issue.
 
 ### Code Changes
 
@@ -132,15 +132,14 @@ Implemented the fix across all in-scope handlers using the planned pattern, extr
 
 ## Pull Request
 
-**PR Link:** [GitHub PR URL when submitted]
+**PR Link:** https://github.com/apache/gravitino/pull/11816
 
-**PR Description:** [Draft or final PR description - much of the content above can be adapted]
+**PR Description:** Fixes a bug in 15 REST handlers where dereferencing request inside catch blocks threw a secondary NullPointerException that masked the original exception when a null request body was sent. The fix precomputes a null-safe identifier before each try block so the real root cause is always preserved and correctly surfaced to the client.
 
 **Maintainer Feedback:**
-- [Date]: [Summary of feedback received]
-- [Date]: [How you addressed it]
+- 6/28/: No Feedback received yet 
 
-**Status:** [Awaiting review / Iterating / Approved / Merged]
+**Status:** Awiting Review
 
 ---
 
