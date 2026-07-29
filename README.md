@@ -50,7 +50,7 @@ Cloned the fork of apache/gravitino locally using VS Code. No build was required
 
 ### Reproduction Evidence
 
-- **Commit showing reproduction:(https://github.com/ethannguyen128/gravitino/tree/fix-issue-10172)
+- **Commit showing reproduction: (https://github.com/ethannguyen128/gravitino/tree/fix-issue-10172)
 - **Screenshots/logs:**  bug is visible directly in source code
 - **My findings:** The catch blocks in 16 REST handler files dereference request.get*() without null checks. When request is null, a secondary NullPointerException is thrown inside the catch block, masking the original exception and making debugging very difficult.
 
@@ -75,7 +75,7 @@ Using UMPIRE framework (adapted):
 **Match:** The fix follows a pattern already used in the codebase, extracting identifiers before the try block so catch blocks never need to access the request object.
 
 **Plan:** 
-1. For each of the 16 affected files, find the catch block that calls request.get*()
+1. For up to 16 in-scope files, find the catch block that calls request.get*()
 2. Extract the value into a local variable before the try block:
 String name = request != null ? request.getName() : "unknown";
 3. Replace request.getName() in the catch block with the precomputed name variable
@@ -85,7 +85,7 @@ String name = request != null ? request.getName() : "unknown";
 
 **Review:** Verify changes follow CONTRIBUTING.md conventions, no endpoint APIs changed, no ExceptionHandlers behavior altered, and commit message follows project format.
 
-**Evaluate:** I will run .\gradlew test -PskipITs and confirm all tests pass. Add a unit test per affected file that sends a null request body and asserts the response is INTERNAL_SERVER_ERROR with an error type that is not NullPointerException.
+**Evaluate:** I will run .\gradlew test -PskipITs and confirm all tests pass. Add a unit test per affected file that sends a null request body and  asserts the response is not a NullPointerException.
 
 ---
 
@@ -103,7 +103,7 @@ String name = request != null ? request.getName() : "unknown";
 N/A — the change is exercised through JUnit/Jersey resource tests (`Test*Operations`); no integration test is required.
 
 ### Manual Testing
-
+After resolving the PowerShell execution-policy restriction noted in Environment Setup, I ran the build and targeted tests locally:
 - `./gradlew :server:spotlessApply` — formatting clean.
 - `./gradlew :server:test -PskipITs --tests "org.apache.gravitino.server.web.rest.Test*Operations"`: **172 tests, all passing.**
 - The first run surfaced one failure: my MetalakeOperations test incorrectly expected a 500. Investigating showed `createMetalake` already has an explicit null-body guard returning 400; I corrected the test assertion and reverted my unnecessary edit to that handler.
@@ -147,20 +147,17 @@ Submitted my first PR for the first issue.
 
 ### Technical Skills Gained
 
-[What you learned technically]
+I better learned to reason about the catch block as its own execution path and apply the null-safe ternary guard to hoist identifiers out of request before the try. Also picked up Jersey/JUnit resource testing and that posting a null body and asserting the response is not a NullPointerException.
 
 ### Challenges Overcome
 
-[What was hard and how you solved it]
+PowerShell's execution-policy restriction initially blocked .\gradlew, so I couldn't build right away. My first Metalake test also failed because I wrongly expected a 500.
 
 ### What I'd Do Differently Next Time
 
-[Reflection on your process]
-
+Next time I would get a green build running first so I can test incrementally instead of finding wrong assumptions late. I'd also read each handler's existing null-handling before writing its test.
 ---
 
 ## Resources Used
 
-- [Link to helpful documentation]
-- [Tutorial or Stack Overflow post that helped]
-- [GitHub issues or discussions that helped]
+- No external resources used.
