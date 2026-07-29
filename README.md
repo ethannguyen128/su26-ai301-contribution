@@ -139,8 +139,7 @@ Submitted my first PR for the first issue.
 **Maintainer Feedback:**
 - 6/28/: No Feedback received yet 
 
-**Status:** Awiting Review
-
+**Status:** Awaiting Review
 ---
 
 ## Learnings & Reflections
